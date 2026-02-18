@@ -1,0 +1,3 @@
+git init                # Initialise le dépôt Git
+git add .               # Ajoute tous les fichiers au suivi Git
+git commit -m "Ajout de la version finale Isekai"  # Premier commit
