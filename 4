@@ -1,0 +1,77 @@
+mkdir le_monde_des_anime
+cd le_monde_des_anime
+
+# Création app.py
+cat > app.py << 'EOF'
+from flask import Flask, render_template, request
+import requests
+
+app = Flask(__name__)
+
+@app.route("/", methods=["GET", "POST"])
+def home():
+    anime = None
+    if request.method == "POST":
+        name = request.form.get("anime")
+        url = f"https://api.jikan.moe/v4/anime?q={name}&limit=1"
+        response = requests.get(url)
+        data = response.json()
+
+        if data["data"]:
+            anime = data["data"][0]
+
+    return render_template("index.html", anime=anime)
+
+if __name__ == "__main__":
+    app.run(debug=True)
+EOF
+
+# Création requirements.txt
+cat > requirements.txt << 'EOF'
+Flask==2.3.2
+requests==2.31.0
+gunicorn==21.2.0
+EOF
+
+mkdir templates
+mkdir static
+
+# HTML
+cat > templates/index.html << 'EOF'
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Le Monde des Anime / Isekai 237</title>
+</head>
+<body style="background:black;color:white;text-align:center;font-family:Arial;">
+    <h1>🌌 Le Monde des Anime / Isekai 237 🌌</h1>
+    <form method="POST">
+        <input type="text" name="anime" placeholder="Nom de l'anime" required>
+        <button type="submit">Rechercher</button>
+    </form>
+
+    {% if anime %}
+        <h2>{{ anime.title }}</h2>
+        <img src="{{ anime.images.jpg.image_url }}" width="200">
+        <p>{{ anime.synopsis }}</p>
+        <p>Episodes : {{ anime.episodes }}</p>
+        <p>Score : {{ anime.score }}</p>
+
+        <h3>Plateformes légales VF :</h3>
+        <p>🔹 Netflix</p>
+        <p>🔹 Crunchyroll</p>
+        <p>🔹 Amazon Prime Video</p>
+    {% endif %}
+</body>
+</html>
+EOF
+
+# Initialisation Git
+git init
+git add .
+git commit -m "Version initiale Isekai 237"
+git branch -M main
+
+# Lier au repo GitHub
+git remote add origin https://TON_USERNAME:TON_TOKEN@github.com/TON_USERNAME/le_monde_des_anime.git
+git push -u origin main
